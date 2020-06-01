@@ -6,7 +6,7 @@
 
 - Busca em tempo real em um input.
 
-## Code
+## Code I
 
 Primeiro vamos definir assinatura da nossa função:
 
@@ -100,3 +100,53 @@ Você também pode conferir os código de teste em `typescript` ou `javascript`
 - [Typescript](./debounce_v1.spec.ts)
 - [Javascript](./debounce_v1.spec.js)
 
+## Code II
+
+Vamos fazer um pequeno ajuste, nada de muito difícil, porém fazer isso logo de cara poderia causar um pouco de confusão. Caso você não tenha percebido se essa não é possível passar parâmentros para dentro de nosso `callback`. Precisamos de uma forma de repassar todos os argumentos da função `debounceWrapper` para a chamada de nosso `callback`, para nossa sorte (de novo) o `javascript` implementa isso, como no exemplo:
+
+```ts
+function f1(callback: Function){
+  return function f2(...parms: any[]) {
+    callback(...params)
+  }
+}
+
+const func = f1((age, name) => {
+  console.log(age, name)
+})
+
+func(19, 'mayk') // 19 mayk
+func(27, 'ana') // 27 ana
+```
+
+Então basta agora refatorar nosso código:
+
+```ts
+function debounce(callback: Function, time: number){
+  let timeoutId = null
+
+  return function debounceWrapper(...params: any[]) {
+    if(timeoutId) {
+      // Tem um timeout em progress, temos que limpra ele
+      clearTimeout(timeoutId)
+    }
+
+    timeoutId = setTimeout(() => {
+      callback(...params)
+      timeoutId = null // Aqui a função já executou e podemos libera para novas interações
+    }, time)
+  }
+}
+```
+
+Agora sim, finalizamos nossa função de debounce.
+
+Você pode conferir esse código em `typescript` ou `javascript`
+
+- [Typescript](./debounce_v2.ts);
+- [Javascript](./debounce_v2.js).
+
+Você também pode conferir os código de teste em `typescript` ou `javascript`
+
+- [Typescript](./debounce_v2.spec.ts)
+- [Javascript](./debounce_v2.spec.js)
