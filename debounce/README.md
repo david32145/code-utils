@@ -150,3 +150,7 @@ Você também pode conferir os código de teste em `typescript` ou `javascript`
 
 - [Typescript](./debounce_v2.spec.ts)
 - [Javascript](./debounce_v2.spec.js)
+
+Você também pode conferir um exemplo em html, com o caso de uso proposto acima.
+
+- [Html Exemplo](./debounce.html)

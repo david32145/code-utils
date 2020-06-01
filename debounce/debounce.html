@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debounce Exemplo</title>
+</head>
+
+<body>
+  <input id="debounce-input" type="text" />
+
+  <script type="text/javascript">
+
+    function debounce(callback, time) {
+      let timeoutId = null
+
+      return function debounceWrapper(...params) {
+        if (timeoutId) {
+          // Tem um timeout em progress, temos que limpra ele
+          clearTimeout(timeoutId)
+        }
+
+        timeoutId = setTimeout(() => {
+          callback(params)
+          timeoutId = null // Aqui a função já executou e podemos libera para novas interações
+        }, time)
+      }
+    }
+
+    const inputText = document.querySelector("#debounce-input")
+
+    function fetchData(url) {
+      console.log("> Fetching data in " + url)
+    }
+
+    const fetchDataDebounce = debounce(fetchData, 500)
+
+    inputText.addEventListener('keypress', function() {
+      fetchDataDebounce('https://api.github.com')
+    })
+
+  </script>
+</body>
+
+</html>
