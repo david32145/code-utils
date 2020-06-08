@@ -20,3 +20,89 @@ Primeiro vamos definir nossa interface, ou seja, como as estruturas de dados vã
 Esse trecho é familiar para quem é programador, não é mesmo? isso é uma função, então o _observable_ pode ser definido simplesmente por uma simples `Function`.
 
 E o _subject_, ele precisa de guardar todos os seus _observable_, como são muitos podemos armazenar os _observable_ em uma lista, em outras palavras uma lista de _observables_, porém além dessa lista o _subject_ deve prover uma forma de inscrição de um observable e desincrição desse mesmo observable, imagine o exemplo do chat, se um usuário sair ele não quer mais receber mensagens, isto é, ele quer se desinscrever do chat. Com isso, temos que o _subject_ é uma estrutura que possui uma lista de _observables_ e dois métodos, um para inscrever e outro para desinscrever determinado _observable_.
+
+Vamos primeiro definir a função _observable_, neste exemplo usarei typescript, porém é fácil de transformar para javascript e além disso, facilita a explicação.
+
+```ts
+type ObservableFunction<T> = (subject: T) => void
+```
+
+Como o próprio tipo se define, uma função _observable_ tem tipo `T` onde `T` é o tipo do subject e não retorna nada. Novamente, se você não usa typescript a única coisa que pode importar é o código abaixo:
+
+```js
+function observable(subject) {
+  // code here...
+}
+```
+
+Agora vamos definir nosso _subject_, o recurso de `class` do javascript se encaixa no nosse requisito perfeitamento (campo, métodos e factories). Nossa class tem a seguinte cara.
+
+```ts
+class Subject {
+  private obsevableList
+
+  public subscribe()
+
+  public unsubscribe()
+}
+```
+
+Com relação ao nome da `class`, você pode usar tanto **Subject** quanto **Observer**, porém o `Subject` precisa ter um tipo, um tipo genérico de prefência.
+
+```ts
+type ObservableFunction<T> = (subject: T) => void
+
+class Subject<T> {
+  private observableList: ObservableFunction<T>[]
+
+  public subscribe(observable: ObservableFunction<T>): string
+
+  public unsubscribe(observableId: string): void
+}
+```
+
+Bem, agora conseguimos definir mais alguns tipos, porém acho que você notou que o método `subscribe` retorna uma `string` e o `unsubscribe` recebe uma `string`, quando o _observable_ se inscreve ele precisa poder se desinscrever e para isso é preciso uma espécies de _id_, onde o _observable_ pode ser gerenciado. Podemos modificar para seguinte forma:
+
+```ts
+type ObservableFunction<T> = (subject: T) => void
+
+interface Observable<T> {
+  handler: ObservableFunction<T>
+  id: string
+}
+
+class Subject<T> {
+  private observableList: Observable<T>[]
+
+  public subscribe(observable: ObservableFunction<T>): string
+
+  public unsubscribe(observableId: string): void
+}
+```
+
+Bem, a modificação foi pouco, basicamente ao invés de armazenar uma lista de funções, é armazenada uma lista de objetos, no caso uma lista de `Observable`.
+
+Além disso, falta duas coisa, uma que informe que um novo subject está disponível e outra que notifica todos os _observables_. Normalmente o nome da função que adiciona um novo subject é `publish` e para notificar os _observables_ é `notifyAll`, então vamos finalizar nossa definição. 
+
+```ts
+type ObservableFunction<T> = (subject: T) => void
+
+interface Observable<T> {
+  handler: ObservableFunction<T>
+  id: string
+}
+
+class Subject<T> {
+  private observableList: Observable<T>[]
+
+  public subscribe(observable: ObservableFunction<T>): string
+
+  public unsubscribe(observableId: string): void
+
+  public publish(subject: T): void
+
+  private notifyAll(): void
+}
+```
+
+Como tanto o atributo `observableList` quanto o método `notifyAll` diz respeito somente a class `Subject` então podemos defini-los como privado. Com isso, terminamos nossa definição das estruturas e podemos partir para o código.
