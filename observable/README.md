@@ -55,7 +55,7 @@ type ObservableFunction<T> = (subject: T) => void
 class Subject<T> {
   private observableList: ObservableFunction<T>[]
 
-  public subscribe(observable: ObservableFunction<T>): string
+  public subscribe(handler: ObservableFunction<T>): string
 
   public unsubscribe(observableId: string): void
 }
@@ -74,7 +74,7 @@ interface Observable<T> {
 class Subject<T> {
   private observableList: Observable<T>[]
 
-  public subscribe(observable: ObservableFunction<T>): string
+  public subscribe(handler: ObservableFunction<T>): string
 
   public unsubscribe(observableId: string): void
 }
@@ -95,7 +95,7 @@ interface Observable<T> {
 class Subject<T> {
   private observableList: Observable<T>[]
 
-  public subscribe(observable: ObservableFunction<T>): string
+  public subscribe(handler: ObservableFunction<T>): string
 
   public unsubscribe(observableId: string): void
 
