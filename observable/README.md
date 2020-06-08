@@ -165,3 +165,88 @@ class Subject<T> {
 ```
 
 Com isso, finalizamos nossa implementação do _observable_ pattern e podemos partir para a prática.
+
+Você pode conferir as implementações completas aqui:
+
+- [Javascript](./observable.js)
+- [Typescript](./observable.ts)
+
+## Example
+
+Vamos programar um exemplo de um chat, onde usuários trocam messagens, vamos definir a tipagem da messagem.
+
+```ts
+interface Message {
+  sender: string // Remetente da messagem
+  content: string // Conteúdo da messagem
+}
+```
+
+Agora vamos criar nosso chat.
+
+```ts
+const chat = new Subject<Message>()
+```
+
+Vamos adicionar três pessoas (john, mary, july).
+
+```ts
+const johnId = chat.subscribe((message) => {
+  console.log(`> John receive message ${message.content} from ${message.sender}`)
+})
+
+const maryId = chat.subscribe((message) => {
+  console.log(`> Mary receive message ${message.content} from ${message.sender}`)
+})
+
+const julyId = chat.subscribe((message) => {
+  console.log(`> July receive message ${message.content} from ${message.sender}`)
+})
+```
+
+Vamos publicar 2 messagens, do john e da july, porém antes disso precisamos mostrar o `log` somente somente se o `sender` for difente do que publicou, vamos adicionar essas condições.
+
+```ts
+const johnId = chat.subscribe((message) => {
+  if(message.sender === "john") return
+  console.log(`> John receive message ${message.content} from ${message.sender}`)
+})
+
+const maryId = chat.subscribe((message) => {
+  if(message.sender === "mary") return
+  console.log(`> Mary receive message ${message.content} from ${message.sender}`)
+})
+
+const julyId = chat.subscribe((message) => {
+  if(message.sender === "july") return
+  console.log(`> July receive message ${message.content} from ${message.sender}`)
+})
+```
+
+Agora de fato vamos publicar duas messagens.
+
+```ts
+chat.publish({
+  sender: "john",
+  content: "Hello guys"
+})
+
+chat.publish({
+  sender: "july",
+  content: "What are they doing?"
+})
+```
+
+É esperado os seguintes logs:
+
+```
+> Mary receive message Hello guys from john
+> July receive message Hello guys from john
+> John receive message What are they doing? from july
+> Mary receive message What are they doing? from july
+```
+
+Você pode conferir os exemplos em:
+
+- [Javascript](./observable.spec.js)
+- [Typescript](./observable.spec.ts)
