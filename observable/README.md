@@ -125,10 +125,6 @@ class Subject<T> {
     })
     return id
   }
-
-  // .
-  // .
-  // .
 }
 ```
 
@@ -145,11 +141,27 @@ class Subject<T> {
   public unsubscribe(observableId: string): void {
     this.observableList.filter(observable => observable.id !== observableId)
   }
-
-  // .
-  // .
-  // .
 }
 ```
 
 Com isso finalizamos a função `unsubscribe`.
+
+Vamos fazer a função `publish` e `notifyAll` juntas, não sei se você percebeu, mas a função `notifyAll` que notifica todos os _observables_ e ele em nem um momento recebe o novo _subject_, ou seja, ele precisa receber, ou melhor o `publish` precisa repassar o _subject_ para o `notifyAll`. A função `notifyAll` é apenas iterar por todos os _observables_ chamar a função `.handler` passando o novo `subject`.
+
+
+```ts
+class Subject<T> {
+
+  public publish(subject: T): void {
+    this.notifyAll(subject)
+  }
+
+  private notifyAll(subject: T): void {
+    this.observableList.forEach(observable => {
+      observable.handler(subject)
+    })
+  }
+}
+```
+
+Com isso, finalizamos nossa implementação do _observable_ pattern e podemos partir para a prática.
