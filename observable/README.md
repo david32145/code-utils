@@ -106,3 +106,30 @@ class Subject<T> {
 ```
 
 Como tanto o atributo `observableList` quanto o método `notifyAll` diz respeito somente a class `Subject` então podemos defini-los como privado. Com isso, terminamos nossa definição das estruturas e podemos partir para o código.
+
+## Code II
+
+Vamo focar somente na class `Subject`, pois o _observable_ é somente uma função, o método mais simples é o `subscribe`.
+
+```ts
+import crypto from "crypto"
+
+class Subject<T> {
+  private observableList: Observable<T>[]
+
+  public subscribe(handler: ObservableFunction<T>): string {
+    const id = crypto.randomBytes().toString()
+    this.observableList.push({
+      id,
+      handler
+    })
+    return id
+  }
+
+  // .
+  // .
+  // .
+}
+```
+
+Para gerar um id aleatório, você pode usar o módulo `crypto` do node, e o método `subscribe` é tão simples quanto adicionar um item em uma lista.
