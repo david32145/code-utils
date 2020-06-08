@@ -133,3 +133,23 @@ class Subject<T> {
 ```
 
 Para gerar um id aleatório, você pode usar o módulo `crypto` do node, e o método `subscribe` é tão simples quanto adicionar um item em uma lista.
+
+Para remover um _observable_ podemos usar uma função própria das lista que o filter, e podemos filtrar nossa lista de _observable_ por todos que não são aquele que recebemos por parâmetro.
+
+```ts
+import crypto from "crypto"
+
+class Subject<T> {
+  private observableList: Observable<T>[]
+
+  public unsubscribe(observableId: string): void {
+    this.observableList.filter(observable => observable.id !== observableId)
+  }
+
+  // .
+  // .
+  // .
+}
+```
+
+Com isso finalizamos a função `unsubscribe`.
