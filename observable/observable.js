@@ -8,7 +8,7 @@ class Subject {
   }
 
   subscribe(handler) {
-    const id = crypto.randomBytes().toString()
+    const id = crypto.randomBytes(8).toString()
     this.observableList.push({
       id,
       handler
